@@ -1,6 +1,6 @@
 import com.typesafe.startscript.StartScriptPlugin
 
-name := "Lift Hello World"
+name := "ScalaKata"
 
 seq(StartScriptPlugin.startScriptForClassesSettings: _*)
 

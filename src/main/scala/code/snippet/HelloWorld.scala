@@ -8,5 +8,5 @@ import java.util.Date
 import Helpers._
 
 class HelloWorld {
-  def howdy = "#time *" #> (new Date toString)
+  def howdy = "#time *" #> ( new Date toString )
 }
