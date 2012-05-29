@@ -1,0 +1,59 @@
+html, body
+{
+	height:100%;
+}
+
+.rows
+{
+	height: 50%;
+}
+
+.square-container
+{
+	height: 100%;
+	width: 50%;
+	float: left;
+	position: relative;
+
+	h1
+	{
+		z-index: 1;
+		bottom: 0;
+		right:0;
+		position: absolute;	
+	}
+}
+
+#kata-code
+{	
+	background-color: blue;
+}
+
+#kata-test
+{
+	background-color: green;
+}
+
+#interpreter
+{
+	background-color: green;
+}
+
+#api-help
+{
+	background-color: blue;
+}
+
+pre
+{
+	border: none;
+	font-size: 16px;
+	font-family: Monaco, Menlo,"Andale Mono","lucida console","Courier New",monospace !important;
+}
+pre, h1, h2
+{
+	background-color: inherit;
+	color: white;
+}
+
+@import "_api.less";

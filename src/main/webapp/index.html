@@ -1,17 +1,138 @@
-<!DOCTYPE html> 
-<html> 
-  <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-    <title>Home</title>
-  </head>
-  <body class="lift:content_id=main">
-    <div id="main" class="lift:surround?with=default;at=content">
-      <h2>Welcome to your project!</h2>
-      <p>
-	<span class="lift:helloWorld.howdy">
-	  Welcome to your Lift app at <span id="time">Time goes here</span>
-	</span>
-      </p>
-    </div>
-  </body>
-</html>
+<lift:surround with="default" at="content">
+
+<div class="rows">
+  		<div class="square-container" id="kata-code">
+  			<h1>Kata Code</h1>
+  			<form class="full-height">
+  				<textarea name="code" id="kata-code-text">
+def compress[A](in: List[A]) =
+  in.foldRight( List.empty[A] ) ( (current,tail) => {
+	if (tail.isEmpty || tail.first != current)
+		current :: tail
+	else
+		tail
+  }
+)
+  				</textarea>
+  			</form>
+  		</div>
+  		<div class="square-container" id="kata-test">
+  			<h1>Kata Test</h1>
+  			<form class="full-height">
+  				<textarea name="code" id="kata-test-text">
+@Test
+def `P08 (**) Eliminate consecutive duplicates of list elements` {
+	assertEquals( Nil, compress( Nil ) )
+	assertEquals( List(1), compress( List(1) ) )
+	assertEquals( List(1,2), compress( List(1,2) ) )
+	assertEquals( List(1, 2, 3), compress( List(1, 1, 1, 2, 2, 3, 3, 3, 3) ) )
+	assertEquals( List("foo"), compress( List("foo", "foo") ) )
+ }
+  				</textarea>
+  			</form>
+  		</div>
+	</div>
+	
+	<div class="rows">
+  		<div class="square-container" id="interpreter">
+  			<h1>Interpreter</h1>
+  			<pre>
+scala> test = List(1,1,1,2,2,3,3,3)
+<console>:10: error: not found: value test
+val $ires0 = test
+             ^
+<console>:7: error: not found: value test
+       test = List(1,1,1,2,2,3,3,3)
+       ^
+scala> val test = List(1,1,1,2,2,3,3,3)
+test: List[Int] = List(1, 1, 1, 2, 2, 3, 3, 3)
+
+scala> test.reverse
+res0: List[Int] = List(3, 3, 3, 2, 2, 1, 1, 1)
+scala>
+			</pre>
+  		</div>
+  		<div class="square-container" id="api-help">
+  		<div id="api-help-wrap">
+	  		<form id="api-seach-form" class="navbar-search">
+                <i class="icon-search icon-black"></i>
+                <input type="text" class="search-query" id="api-search-bar" value="List">
+            </form>
+			<ul id="api-menu">
+				<li id="scala.collection.immutable.List.foldLeft">
+					<h2>
+					<a href="#scala.collection.immutable.List.foldLeft">
+						<label class="api-label" for="scala.collection.immutable.List.foldLeft">List.foldLeft</label>
+					</a>
+					</h2>
+				  	<pre>
+scala> val a = List(1,2,3,4)
+a: List[Int] = List(1, 2, 3, 4)
+
+scala> a.foldLeft( "z" )( "(" +  _ + " op " + _ + ")" )
+res4: java.lang.String = ((((z op 1) op 2) op 3) op 4)
+
+  					</pre>
+				</li>
+				<li id="scala.collection.immutable.List.foldRight">
+					<h2>
+					<a href="#scala.collection.immutable.List.foldRight">
+						<label class="api-label" for="scala.collection.immutable.List.foldRight">List.foldRight</label>
+					</a>
+					</h2>
+				  	<pre>
+scala> val a = List(1,2,3,4)
+a: List[Int] = List(1, 2, 3, 4)
+
+scala> a.foldRight( "z" )( "(" +  _ + " op " + _ + ")" )
+res5: java.lang.String = (1 op (2 op (3 op (4 op z))))
+  					</pre>
+				</li>
+				
+				<li id="scala.collection.immutable.List.reverse">
+					<h2>
+					<a href="#scala.collection.immutable.List.reverse">
+						<label class="api-label" for="scala.collection.immutable.List.reverse">List.reverse</label>
+					</a>
+					</h2>
+				  	<pre>
+scala> val a = List(1,2,3,4)
+a: List[Int] = List(1, 2, 3, 4)
+
+scala> a.reverse
+res0: List[Int] = List(4, 3, 2, 1)
+  					</pre>
+				</li>
+				
+			</ul>
+  			<h1>API Reference</h1>
+  		</div>
+  		</div>
+	</div>
+	
+	<script src="vendors/CodeMirror2/codemirror.js"></script>
+    <script src="vendors/CodeMirror2/clike.js"></script>
+    <script>
+      var kataCode = CodeMirror.fromTextArea(document.getElementById("kata-code-text"), {
+        lineNumbers: false,
+        matchBrackets: true,
+        theme: "ambiance",
+        mode: "text/x-scala"
+      });
+      
+      var kataTest = CodeMirror.fromTextArea(document.getElementById("kata-test-text"), {
+          lineNumbers: false,
+          matchBrackets: true,
+          theme: "ambiance",
+          mode: "text/x-scala",
+          readOnly: true
+        });
+      kataTest.setLineClass(2,"test-sucess");
+      kataTest.setLineClass(3,"test-sucess");
+      kataTest.setLineClass(4,"test-sucess");
+      kataTest.setLineClass(5,"test-error");
+      kataTest.setLineClass(6,"test-error");
+      
+    </script>
+
+</lift:surround>
