@@ -1,23 +1,27 @@
 package bootstrap
 package liftweb
 
-import net.liftweb.common.Loggable
-
-import net.liftweb.util.Helpers._
+import net.liftweb.http.LiftRulesMocker.toLiftRules
 import net.liftweb.http.Html5Properties
 import net.liftweb.http.LiftRules
 import net.liftweb.http.Req
-
-import net.liftweb.sitemap.SiteMap
-import net.liftweb.sitemap.Menu
+import net.liftweb.sitemap.{SiteMap,Menu}
+import net.liftweb.util.Vendor.valToVender
 
 class Boot {
   def boot {
     LiftRules.addToPackages("code")
+    LiftRules.addToPackages("com.github.masseguillaume")
+    
     LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
-		
-    LiftRules.setSiteMap(SiteMap(Menu("Home") / "index"))
 
+    val sitemap = List(
+	  Menu("Home") / "index",
+	  Menu("Repl") / "repl"
+	)
+	LiftRules.setSiteMap(SiteMap(sitemap:_*))
+    
+    
     LiftRules.enableContainerSessions = false
     LiftRules.statelessReqTest.append { case _ => true }
 

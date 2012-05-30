@@ -1,0 +1,33 @@
+<lift:surround with="default" at="content">
+
+	<span class="lift:Interpreter.test">
+		<span id="test">allo</span>
+	</span>
+
+	<div class="full-container" id="kata-code">
+	  	<form class="full-height">
+	  	<textarea name="code" id="kata-code-text">
+def compress[A](in: List[A]) =
+  in.foldRight( List.empty[A] ) ( (current,tail) => {
+	if (tail.isEmpty || tail.first != current)
+		current :: tail
+	else
+		tail
+  }
+)
+	  	</textarea>
+		</form>
+	</div>
+	
+	<script src="vendors/CodeMirror2/codemirror.js"></script>
+	<script src="vendors/CodeMirror2/clike.js"></script>
+	<script>
+	  var kataCode = CodeMirror.fromTextArea(document.getElementById("kata-code-text"), {
+	    lineNumbers: false,
+	    matchBrackets: true,
+	    theme: "ambiance",
+	    mode: "text/x-scala"
+	  });
+	</script>
+
+</lift:surround>
