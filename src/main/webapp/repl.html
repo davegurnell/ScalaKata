@@ -1,29 +1,29 @@
 <lift:surround with="default" at="content">
 
-	<div class="full-container" id="kata-code">
-	  	<form class="full-height lift:Interpreter.test">
-	  	<textarea name="code" id="kata-code-text">
-def compress[A](in: List[A]) =
-  in.foldRight( List.empty[A] ) ( (current,tail) => {
-	if (tail.isEmpty || tail.first != current)
-		current :: tail
-	else
-		tail
-  }
-)
-	  	</textarea>
-		</form>
-	</div>
+  	<form>
+  		<textarea name="code" lift="Interpreter.code" id="kata-code"></textarea>
+  		<input type="submit" id="kata-eval">
+		<hr>
+		
+  		<textarea lift="Interpreter.eval" id="kata-result">
+  		</textarea>
+	</form>
 	
 	<script src="vendors/CodeMirror2/codemirror.js"></script>
 	<script src="vendors/CodeMirror2/clike.js"></script>
 	<script>
-	  var kataCode = CodeMirror.fromTextArea(document.getElementById("kata-code-text"), {
+	  var kataCode = CodeMirror.fromTextArea(document.getElementById("kata-code"), {
 	    lineNumbers: false,
 	    matchBrackets: true,
 	    theme: "ambiance",
 	    mode: "text/x-scala"
 	  });
+	  
+	  var kataResult = CodeMirror.fromTextArea(document.getElementById("kata-result"), {
+	    lineNumbers: false,
+	    matchBrackets: true,
+	    theme: "ambiance",
+	    mode: "text/x-scala"
+	  }); 
 	</script>
-
 </lift:surround>
