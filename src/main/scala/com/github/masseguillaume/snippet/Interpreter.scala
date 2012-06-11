@@ -1,16 +1,21 @@
 package com.github.masseguillaume.snippet
 
-import scala.tools.nsc.interpreter.IMain
-
+import com.twitter.util.Eval
 import net.liftweb.util.Helpers.strToCssBindPromoter
+
+object Interpreter
+{
+	private lazy val eval = new Eval()
+	
+	def app( text: String ):String = eval( text ).toString 
+}
 
 class Interpreter
 {
-	def test = "#test *" #> {
-		val compiler = new IMain
-		
-		val res = compiler.interpret( "val a = List(1,2,3,4)" )
-		
-		res.toString()
+	def test = "#kata-code-text *" #> {
+		Interpreter.app(
+		"""
+			List( 1, 2, 3, 4 ) ::: List( 1, 2 )
+		""")
 	}
 }

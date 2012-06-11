@@ -1,11 +1,7 @@
 <lift:surround with="default" at="content">
 
-	<span class="lift:Interpreter.test">
-		<span id="test">allo</span>
-	</span>
-
 	<div class="full-container" id="kata-code">
-	  	<form class="full-height">
+	  	<form class="full-height lift:Interpreter.test">
 	  	<textarea name="code" id="kata-code-text">
 def compress[A](in: List[A]) =
   in.foldRight( List.empty[A] ) ( (current,tail) => {
