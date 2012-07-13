@@ -3,6 +3,7 @@ package liftweb
 
 import net.liftweb.http._
 import net.liftweb.http.LiftRulesMocker.toLiftRules
+import net.liftweb.common.Full
 import net.liftweb.sitemap.{SiteMap,Menu}
 import net.liftweb.util.Vendor.valToVender
 
@@ -20,6 +21,14 @@ class Boot {
     
     // Use HTML5 for rendering
 	LiftRules.htmlProperties.default.set((r: Req) =>
-	  new Html5Properties(r.userAgent))  
+	  new Html5Properties(r.userAgent))
+	  
+	//Show the spinny image when an Ajax call starts
+    LiftRules.ajaxStart =
+      Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)
+    
+    // Make the spinny image go away when it ends
+    LiftRules.ajaxEnd =
+      Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
   }
 }

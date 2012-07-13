@@ -15,7 +15,7 @@ object Interpreter
 	private val eval = new Eval()
 	def evalText( text: String ) = {
 		try{
-			eval( text ).toString 
+			eval( text ).toString
 		}
 		catch
 		{
@@ -31,21 +31,21 @@ class Interpret
 	def render = "type=submit [onclick]" #> {
 
 		val a = SHtml.ajaxCall(
-			MirrorValById("kata-code"),
+			MirrorValById("code"),
 			code => {
-				SetHtml("kata-result", Text( Interpreter.evalText( code ) ) ) &
-				JsRaw( "kataResult.setValue(document.getElementById('kata-result').value)" )
+				SetHtml("result", Text( Interpreter.evalText( code ) ) ) &
+				JsRaw( "resultMirror.setValue( document.getElementById( 'result' ).value )" )
 			} 
 		)
 
-		( a._1, a._2 & JsRaw("return false") )
+		( a._1, a._2 & JsRaw("return false") ) // prevent form submit
 	}
 
-	def code = "#kata-code *"#> {
+	def code = "#code *"#> {
 		S.param("code") openOr defaultCode
 	}
 	
-	def eval = "#kata-result *"#> {
+	def eval = "#result *"#> {
 		if ( S.param("eval").isDefined ) {
 			Interpreter.evalText( S.param("code") openOr defaultCode )
 		}
@@ -58,7 +58,7 @@ class Interpret
 		def toJsCmd = 
 		"""
 			( function() {
-				kataCode.save(); 
+				codeMirror.save(); 
 				if ( document.getElementById(""" + id.encJs + """) ) {
 					return document.getElementById(""" + id.encJs + """).value;
 				} else {

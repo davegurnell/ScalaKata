@@ -1,0 +1,27 @@
+html, body, form, #code-wrap, #result-wrap
+{
+	width: 100%;
+}
+
+html, body, form
+{
+	height: 100%;
+}
+
+#result-wrap
+{
+	height: 20%;
+}
+
+#code-wrap
+{
+	position: relative;
+	height: 80%;
+}
+
+#eval
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+}
