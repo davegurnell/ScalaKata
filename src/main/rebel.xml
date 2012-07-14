@@ -2,12 +2,9 @@
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd">
 
 	<classpath>
-		<dir name="${rebel.workspace.path}/ScalaKata/target/scala-2.9.1/classes">
-		</dir>
-		<dir name="${rebel.workspace.path}/ScalaKata/target/scala-2.9.1/test-classes">
-		</dir>
-		<dir name="${rebel.workspace.path}/ScalaKata/bin">
-		</dir>
+		<dir name="/Users/guillaume/Projects/ScalaKata/target/scala-2.9.1/classes"></dir>
+		<dir name="/Users/guillaume/Projects/ScalaKata/target/scala-2.9.1/test-classes"></dir>
+		<dir name="/Users/guillaume/Projects/ScalaKata/bin"></dir>
 	</classpath>
 
 </application>

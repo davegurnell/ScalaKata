@@ -1,21 +1,30 @@
-import com.typesafe.startscript.StartScriptPlugin
-
 name := "ScalaKata"
 
-seq(StartScriptPlugin.startScriptForClassesSettings: _*)
+scalaVersion := "2.9.1"
 
-// Add Twitter's Repository
+seq(webSettings :_*)
+
+scanDirectories in Compile := Nil
+
 resolvers += "twitter.com" at "http://maven.twttr.com/"
 
 libraryDependencies ++= {
   Seq(
-    "org.eclipse.jetty" % "jetty-server" % "7.5.4.v20111024" % "compile->default",
-    "org.eclipse.jetty" % "jetty-servlet" % "7.5.4.v20111024" % "compile->default",
-    "javax.servlet" % "servlet-api" % "2.5" % "provided->default",
-    "net.liftweb" %% "lift-webkit" % "2.4" % "compile->default" withSources(),
-    "ch.qos.logback" % "logback-classic" % "1.0.1" % "compile->default",
-    "com.twitter" % "util-eval" % "5.0.3" withSources(),
-	"com.foursquare" %% "rogue" % "1.1.8" intransitive(),
-	"net.liftweb" %% "lift-mongodb-record" % "2.4"
+    "net.liftweb"         %% "lift-webkit"              % "2.4"           % "compile->default"    withSources(),
+    "net.liftweb"         %% "lift-mongodb-record"      % "2.4",
+    "ch.qos.logback"      % "logback-classic"           % "1.0.3",
+    "org.eclipse.jetty" % "jetty-webapp" % "8.0.4.v20111024" % "container", // For Jetty 8
+    "javax.servlet"       % "servlet-api"               % "2.5"           % "provided->default",
+    "com.twitter"         % "util-eval"                 % "5.0.3"                                 withSources(),
+	  "com.foursquare"      %% "rogue"                    % "1.1.8"                                 intransitive(),
+    "org.mortbay.jetty"   % "jetty"                     % "6.1.22"        % "test",
+    "junit"               % "junit"                     % "4.8"           % "test",
+    "org.specs2"          %% "specs2"                   % "1.11"          % "test"
   )
 }
+
+scalacOptions += "-deprecation"
+
+// port in container.Configuration := 8081
+
+//"org.mortbay.jetty"   % "jetty"                     % "6.1.26"        % "test,container",
