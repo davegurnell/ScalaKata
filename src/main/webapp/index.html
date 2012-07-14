@@ -4,33 +4,50 @@
 
 		<div id="code-wrap">
 			<textarea name="code" lift="Interpret.code" id="code"></textarea>
-	  		<input id="eval" class="btn btn-primary btn-large" type="submit" value="Eval">
+			
+			<div id="controls">
+			
+				<button id="eval" class="btn btn-success btn-large" type="submit" name="action" value="Eval">
+  					<i class="icon-play icon-white"></i> Run
+				</button>
+
+			</div>
 		</div>
   		
 		<div id="result-wrap">
 			<textarea lift="Interpret.eval" id="result"></textarea>
 		</div>
   		
-
 		<input type="hidden" name="eval">
 	</form>
 	
-	<script src="vendors/CodeMirror2/codemirror.js"></script>
-	<script src="vendors/CodeMirror2/clike.js"></script>
-	<script>
-	  var codeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
-	    lineNumbers: false,
-	    matchBrackets: true,
-	    theme: "ambiance",
-	    mode: "text/x-scala"
-	  });
-
-	  var resultMirror = CodeMirror.fromTextArea(document.getElementById("result"), {
-	    lineNumbers: false,
-	    matchBrackets: true,
-	    theme: "ambiance",
-	    mode: "text/x-scala",
-	    readOnly: true
-	  }); 
-	</script>
+	<lift:tail>
+		<script src="vendors/CodeMirror2/codemirror.js"></script>
+		<script src="vendors/CodeMirror2/clike.js"></script>
+		<script>
+		  $(function(){
+			  window.codeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
+			    lineNumbers: false,
+			    matchBrackets: true,
+			    theme: "ambiance",
+			    mode: "text/x-scala"
+			  });
+	
+			  window.resultMirror = CodeMirror.fromTextArea(document.getElementById("result"), {
+			    lineNumbers: false,
+			    matchBrackets: true,
+			    theme: "ambiance",
+			    mode: "text/x-scala",
+			    readOnly: true
+			  });
+			  
+			  $(document).keydown( function( e ) {
+				  if( e.keyCode == 13 && ( e.ctrlKey || e.metaKey ) ) { // ctrl + enter => run
+			            $('#eval').trigger('click');
+				  		e.preventDefault();
+			        }
+			  });
+		  });
+		</script>
+	</lift:tail>
 </lift:surround>

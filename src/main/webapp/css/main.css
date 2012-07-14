@@ -19,9 +19,17 @@ html, body, form
 	height: 80%;
 }
 
-#eval
+#controls
 {
 	position: absolute;
-	top: 0;
+	bottom: 0;
 	right: 0;
+}
+
+#controls button
+{
+	float: right;
+	clear: both;
+	display: block;
+	margin: 10px;
 }

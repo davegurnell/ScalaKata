@@ -28,13 +28,14 @@ class Interpret
 {
 	private def defaultCode = ""
 
-	def render = "type=submit [onclick]" #> {
+	def render = "#eval [onclick]" #> {
 
 		val a = SHtml.ajaxCall(
-			MirrorValById("code"),
+			MirrorValById(),
 			code => {
 				SetHtml("result", Text( Interpreter.evalText( code ) ) ) &
-				JsRaw( "resultMirror.setValue( document.getElementById( 'result' ).value )" )
+				JsRaw( "resultMirror.setValue( document.getElementById( 'result' ).value )" ) &
+				JsRaw( "$('#eval').attr('disabled', '')" )
 			} 
 		)
 
@@ -54,13 +55,15 @@ class Interpret
 		}
 	}
 	
-	case class MirrorValById(id: String) extends JsExp {
+	case class MirrorValById() extends JsExp {
 		def toJsCmd = 
 		"""
 			( function() {
-				codeMirror.save(); 
-				if ( document.getElementById(""" + id.encJs + """) ) {
-					return document.getElementById(""" + id.encJs + """).value;
+				$('#eval').attr('disabled','disabled')
+				codeMirror.save();
+				var $code = $('#code'); 
+				if ( $code.length ) {
+					return $code.attr('value');
 				} else {
 					return null;
 				}
