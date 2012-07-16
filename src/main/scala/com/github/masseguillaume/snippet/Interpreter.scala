@@ -2,13 +2,35 @@ package com.github.masseguillaume.snippet
 
 import com.twitter.util.Eval
 import com.twitter.util.Eval._
-import net.liftweb.util.Helpers._
-import net.liftweb.http._
-import net.liftweb.http.js._
-import net.liftweb.http.js.JE._
-import net.liftweb.http.js.JsCmds._
+
+import net.liftweb._
+import common._
+import sitemap._
+import sitemap.Loc._
+import util.Helpers._
+import http._
+import js._
+import JE._
+import JsCmds._
 
 import scala.xml.Text
+
+
+
+case class KataRessource( id: String )
+
+object Kata
+{
+	val menu = Menu.param[KataRessource](
+		"Kata", "Kata", 
+      id => Full( KataRessource(id) ), 
+      kata => kata.id ) / * >> 
+		Template( () =>
+			Templates( "kata" :: Nil ) openOr <b>template not found</b>
+		)
+
+	lazy val loc = menu.toLoc
+}
 
 object Interpreter
 {
@@ -24,9 +46,9 @@ object Interpreter
 	}
 }
 
-class Interpret
+class Interpret( kata: KataRessource )
 {
-	private def defaultCode = ""
+	private def defaultCode = kata.id
 
 	def render = "#eval [onclick]" #> {
 

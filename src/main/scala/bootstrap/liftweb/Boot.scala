@@ -1,34 +1,48 @@
-package bootstrap
-package liftweb
+package bootstrap.liftweb
+
+import com.github.masseguillaume.service._
+import com.github.masseguillaume.snippet.Kata
+
+import code.snippet.Param
+
+import net.liftweb._
+import http._
+import util.Helpers._
 
 import net.liftweb.http._
-import net.liftweb.http.LiftRulesMocker.toLiftRules
 import net.liftweb.common.Full
 import net.liftweb.sitemap.{SiteMap,Menu}
 import net.liftweb.util.Vendor.valToVender
 
 class Boot {
-  def boot {
-    LiftRules.addToPackages("code")
-    LiftRules.addToPackages("com.github.masseguillaume")
-    
-    LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
+	def boot {
 
-    val sitemap = List( Menu("Home") / "index" )
-	LiftRules.setSiteMap(SiteMap(sitemap:_*))
-
-    LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
+		LiftRules.addToPackages("com.github.masseguillaume")
+		
+		MongoService.init
     
-    // Use HTML5 for rendering
-	LiftRules.htmlProperties.default.set((r: Req) =>
-	  new Html5Properties(r.userAgent))
+		LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
+
+		val sitemap = List( 
+			Menu( "Param") / "param",
+			Menu( Kata.loc ) 
+		)
+		
+		LiftRules.setSiteMap(SiteMap(sitemap:_*))
+
+		LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
+
+		// Use HTML5 for rendering
+		LiftRules.htmlProperties.default.set((r: Req) =>
+	  		new Html5Properties(r.userAgent)
+		)
 	  
-	//Show the spinny image when an Ajax call starts
-    LiftRules.ajaxStart =
-      Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)
+		//Show the spinny image when an Ajax call starts
+    	LiftRules.ajaxStart =
+      	Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)
     
-    // Make the spinny image go away when it ends
-    LiftRules.ajaxEnd =
-      Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
-  }
+    	// Make the spinny image go away when it ends
+    	LiftRules.ajaxEnd =
+      	Full(() => LiftRules.jsArtifacts.hide("ajax-loader").cmd)
+  	}
 }
