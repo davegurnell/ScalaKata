@@ -3,8 +3,6 @@ package bootstrap.liftweb
 import com.github.masseguillaume.service._
 import com.github.masseguillaume.snippet.Kata
 
-import code.snippet.Param
-
 import net.liftweb._
 import http._
 import util.Helpers._
@@ -23,10 +21,7 @@ class Boot {
     
 		LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
 
-		val sitemap = List( 
-			Menu( "Param") / "param",
-			Menu( Kata.loc ) 
-		)
+		val sitemap = List( Menu( Kata.loc ) )
 		
 		LiftRules.setSiteMap(SiteMap(sitemap:_*))
 
