@@ -13,24 +13,13 @@ import js._
 import JE._
 import JsCmds._
 
+import com.github.masseguillaume.model.Kata
+import com.foursquare.rogue.Rogue._
+import org.bson.types.ObjectId
+
 import scala.xml.Text
 
 case class KataRessource( id: String )
-
-object Kata
-{
-	val menu = Menu.param[KataRessource](
-		"Kata", "Kata", 
-      id => Full( KataRessource(id) ), 
-      kata => kata.id ) / * >> 
-		Template( () =>
-			Templates( "kata" :: Nil ) openOr <b>template not found</b>
-	)
-	
-//	def findKata( id: String ): Box[Kata] = { }
-
-	lazy val loc = menu.toLoc
-}
 
 object Interpreter
 {
@@ -44,11 +33,44 @@ object Interpreter
 			case ex: CompilerException => ex.getMessage 
 		}
 	}
+	
+	val menu = Menu.param[Box[Kata]](
+		"Kata", "Kata", 
+      findKata, 
+      encodeKata _ ) / * >> 
+		Template( () => Templates( "kata" :: Nil ) openOr <b>template not found</b>
+	)
+
+	def findKata( id: String ): Box[Box[Kata]] = {
+		id match {
+			case "index" => Full( Empty )
+			case _ => {
+				
+				println( id )
+				
+				val res = Kata where ( _._id eqs new ObjectId( id ) ) fetch( 1 )
+				
+				res match {
+					case head :: Nil => Full( Full( head ) )
+					case Nil => Empty
+				}
+			}
+		}
+	}
+	
+	def encodeKata( kata: Box[Kata] ): String = {
+		kata match {
+			case Full(k) => k._id.toString
+			case _ => ""
+		}
+	}
+
+	lazy val loc = menu.toLoc
 }
 
-class Interpret( kata: KataRessource )
+class Interpret( kata: Box[Kata] )
 {
-	private def defaultCode = kata.id
+	private def defaultCode = ""
 
 	def render = {
 		
@@ -56,33 +78,50 @@ class Interpret( kata: KataRessource )
 			val res = SHtml.ajaxCall(
 				MirrorValById(),
 				code => {
-					SetHtml("result", Text( Interpreter.evalText( code ) ) ) &
+					
+					val result = Interpreter.evalText( code )
+					
+					val parent = kata match {
+						case Full( k ) => {
+							k._id.is
+						}
+						case _ => new ObjectId
+					}
+
+					val newkata = Kata
+						.createRecord
+						.code( code )
+						.result( result )
+						.parent( parent )
+						.save
+
+					SetHtml( "result", Text( result ) ) &
 					JsRaw( "resultMirror.setValue( document.getElementById( 'result' ).value )" ) &
-					JsRaw( "$('#eval').attr('disabled', '')" )
+					JsRaw( "$('#eval').attr('disabled', '')" ) &
+			    	JsRaw( "window.history.pushState( null, null,'/" + newkata._id + "')" )
 				}
 			)
 			
 			( res._1, res._2 & JsRaw("return false") )
-		} &
-		"#save [onclick]" #> {
-			val res = SHtml.ajaxInvoke( () => {
-			    val id = 10101010;
-			    JsRaw("window.history.pushState( null, null,'/" + id + "')")
-			})
-
-			( res._1, res._2 & JsRaw("return false") )
 		}
 	}
+	
+
 	def code = "#code *" #> {
-		S.param("code") openOr defaultCode
+		S.param("code") openOr {				// Form submit /wo javascript
+			kata match {
+				case Full( k ) => k.code.is	// GET Url
+				case _ => defaultCode			// Invalid kata or Index
+			}
+		}
 	}
 	
 	def eval = "#result *" #> {
-		if ( S.param("eval").isDefined ) {
-			Interpreter.evalText( S.param("code") openOr defaultCode )
-		}
-		else {
-			""
+		kata match {
+			case Full( k ) => k.result.is
+			case _ => Interpreter.evalText( 
+				S.param("code") openOr defaultCode 
+			)
 		}
 	}
 	

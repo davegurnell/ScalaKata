@@ -1,7 +1,7 @@
 package bootstrap.liftweb
 
 import com.github.masseguillaume.service._
-import com.github.masseguillaume.snippet.Kata
+import com.github.masseguillaume.snippet.Interpreter
 
 import net.liftweb._
 import http._
@@ -17,11 +17,11 @@ class Boot {
 
 		LiftRules.addToPackages("com.github.masseguillaume")
 		
-		MongoService.init
+		KataMongo.start
     
 		LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
 
-		val sitemap = List( Menu( Kata.loc ) )
+		val sitemap = List( Menu( Interpreter.loc ) )
 		
 		LiftRules.setSiteMap(SiteMap(sitemap:_*))
 

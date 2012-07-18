@@ -5,17 +5,18 @@ import record.field._
 import mongodb.record._
 import field._
 
-class Kata private() 
-	extends MongoRecord[Kata] 
-	with MongoId[Kata]
+import com.github.masseguillaume.service.KataMongo
+
+class Kata extends MongoRecord[Kata] with MongoId[Kata]
 {
 	def meta = Kata
-	
-	object in extends StringField( this, 5000 )
-	object out extends StringField( this, 500 )
+
+	object parent extends ObjectIdField( this )
+	object code extends StringField( this, 5000 )
+	object result extends StringField( this, 500 )
 }
 
 object Kata extends Kata with MongoMetaRecord[Kata]
 {
-	
+	override def mongoIdentifier = KataMongo
 }

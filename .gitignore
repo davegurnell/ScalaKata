@@ -1,3 +1,5 @@
+src/main/resources/props/production.*
+
 # use glob syntax.
 syntax: glob
 *.ser
