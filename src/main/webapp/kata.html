@@ -1,5 +1,5 @@
 <lift:surround with="default" at="content">
-  	<form lift="Interpret.render" method="POST" class="full">
+  	<form id="content" lift="Interpret.render" method="POST" class="full">
 
   		<div id="code-wrap">
   			<textarea name="code" lift="Interpret.code" id="code"></textarea>
@@ -21,30 +21,31 @@
 	<lift:tail>
 		<script src="/vendors/CodeMirror2/codemirror.js"></script>
 		<script src="/vendors/CodeMirror2/clike.js"></script>
+		<script src="js/fullscreen.js"></script>
 		<script>
-		  $(function(){
-			  window.codeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
-			    lineNumbers: true,
-			    matchBrackets: true,
-			    theme: "ambiance",
-			    mode: "text/x-scala"
-			  });
+			$(function(){
+				window.codeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
+					lineNumbers: true,
+					matchBrackets: true,
+					theme: "ambiance",
+					mode: "text/x-scala"
+				});
 	
-			  window.resultMirror = CodeMirror.fromTextArea(document.getElementById("result"), {
-			    lineNumbers: false,
-			    matchBrackets: true,
-			    theme: "ambiance",
-			    mode: "text/x-scala",
-			    readOnly: true
-			  });
+				window.resultMirror = CodeMirror.fromTextArea(document.getElementById("result"), {
+			   	lineNumbers: false,
+			   	matchBrackets: true,
+			   	theme: "ambiance",
+			   	mode: "text/x-scala",
+			   	readOnly: true
+			  	});
 			  
-			  $(document).keydown( function( e ) {
-				  if( e.keyCode == 13 && ( e.ctrlKey || e.metaKey ) ) { // ctrl + enter => run
-			            $('#eval').trigger('click');
-				  		e.preventDefault();
-			        }
-			  });
-		  });
+				$(document).keydown( function( e ) {
+					if( e.keyCode == 13 && ( e.ctrlKey || e.metaKey ) ) { // ctrl + enter => run
+						$('#eval').trigger('click');
+						e.preventDefault();
+					}
+				});
+			});
 		</script>
 	</lift:tail>
 </lift:surround>
