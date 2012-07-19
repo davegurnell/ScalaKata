@@ -1,6 +1,7 @@
 html, body, form, #code-wrap, #result-wrap
 {
 	width: 100%;
+	padding: 0;
 }
 
 html, body, form
@@ -8,15 +9,19 @@ html, body, form
 	height: 100%;
 }
 
+#code-wrap
+{
+	height: 80%;
+}
+
 #result-wrap
 {
 	height: 20%;
 }
 
-#code-wrap
+#code-wrap, #result-wrap
 {
 	position: relative;
-	height: 80%;
 }
 
 #controls
@@ -32,4 +37,48 @@ html, body, form
 	clear: both;
 	display: block;
 	margin: 10px;
+}
+
+label[for="code"], label[for="result"] 
+{
+	transition: bottom 2s, font-size 2s;
+	-o-transition: bottom 2s, font-size 2s;
+	-moz-transition: bottom 2s, font-size 2s;
+	-webkit-transition: bottom 2s, font-size 2s;
+}
+
+@media all and ( min-height: 100px ) and ( max-height: 400px ) {
+
+  	label[for="code"], label[for="result"]
+	{
+		bottom: 10%;
+		font-size: 20px;
+	}
+}
+
+
+@media all and ( min-height: 401px ) {
+
+	label[for="code"], label[for="result"]
+	{
+		bottom: 50%;
+		font-size: 40px;
+	}
+}
+
+label[for="code"], label[for="result"]
+{
+	position: absolute;
+	color: #3D3D3D;
+
+	right: 0;
+
+	z-index: 2;
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
