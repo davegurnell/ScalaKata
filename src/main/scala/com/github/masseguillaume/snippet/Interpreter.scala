@@ -26,7 +26,18 @@ object Interpreter
 	private val eval = new Eval()
 	def evalText( text: String ) = {
 		try{
-			eval( text ).toString
+			
+			// redirect IO for this request
+			val baos = new java.io.ByteArrayOutputStream
+			Console.withOut( baos ) {
+
+				// eval code
+				eval( text ).toString match {
+					case "()" => ""
+					case other => other + "\n"
+				}
+
+			}	+ baos.toString
 		}
 		catch
 		{
@@ -45,9 +56,7 @@ object Interpreter
 		id match {
 			case "index" => Full( Empty )
 			case _ => {
-				
-				println( id )
-				
+
 				val res = Kata where ( _._id eqs new ObjectId( id ) ) fetch( 1 )
 				
 				res match {
@@ -70,8 +79,6 @@ object Interpreter
 
 class Interpret( kata: Box[Kata] )
 {
-	private def defaultCode = ""
-
 	def render = {
 		
 		"#eval [onclick]" #> {
@@ -111,7 +118,7 @@ class Interpret( kata: Box[Kata] )
 		S.param("code") openOr {				// Form submit /wo javascript
 			kata match {
 				case Full( k ) => k.code.is	// GET Url
-				case _ => defaultCode			// Invalid kata or Index
+				case _ => ""						// Index ( new Kata )
 			}
 		}
 	}
@@ -119,9 +126,10 @@ class Interpret( kata: Box[Kata] )
 	def eval = "#result *" #> {
 		kata match {
 			case Full( k ) => k.result.is
-			case _ => Interpreter.evalText( 
-				S.param("code") openOr defaultCode 
-			)
+			case _ => S.param("code") match {
+				case Full( code ) => Interpreter.evalText( code )
+				case _ => ""
+			}			
 		}
 	}
 	
