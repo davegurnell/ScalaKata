@@ -41,7 +41,7 @@ object Interpreter
 		}
 		catch
 		{
-			case ex: CompilerException => ex.getMessage 
+			case ex: Exception => ex.getMessage 
 		}
 	}
 	
