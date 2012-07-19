@@ -1,5 +1,8 @@
 # Scala Kata
 ## __Run__ & __Share__
+<a href="http://scala.masgui.cloudbees.net/50088c7fe4b0cfd655485a58">
+	<img src="https://lh4.googleusercontent.com/-VmkEiQdDnAI/UAiXwiRbm0I/AAAAAAAABP8/wv-bbcaWPMs/s1016/cap-tiff.png" />
+</a>
 
 # Use cases
 ## Training
