@@ -1,4 +1,5 @@
 src/main/resources/props/production.*
+.history
 
 # use glob syntax.
 syntax: glob

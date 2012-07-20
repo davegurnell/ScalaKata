@@ -20,15 +20,24 @@ function RunPrefixMethod(obj, method, args) {
 
 var el = document.getElementById("content");  
 el.onkeydown = function( e ) {
-  if( e.keyCode == 122 ) { // f11
-    
-    e.preventDefault();
-    
-  	if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
-  		RunPrefixMethod(document, "CancelFullScreen");
-  	}
-  	else {
-  		RunPrefixMethod(el, "RequestFullScreen", Element.ALLOW_KEYBOARD_INPUT );
-  	}
-  }
+  
+	toogleFullscren = function() {
+		
+		if( RunPrefixMethod( document, "FullScreen" ) 
+		|| RunPrefixMethod( document, "IsFullScreen" ) ) {
+			
+			RunPrefixMethod( document, "CancelFullScreen" );
+		}
+		else {
+			RunPrefixMethod( el, "RequestFullScreen", Element.ALLOW_KEYBOARD_INPUT );
+		}  
+	}
+
+	if( e.keyCode == 122 												// F11 (windows) 
+		|| ( e.shiftKey && e.metaKey && e.keyCode == 70 ) ) { // or Command + Shift + F (mac)
+
+		e.preventDefault();
+
+		toogleFullscren();
+	}
 }
