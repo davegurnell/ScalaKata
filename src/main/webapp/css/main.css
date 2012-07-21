@@ -1,10 +1,15 @@
-html, body, form, #code-wrap, #result-wrap
+body
+{
+	background-color: black;
+}
+
+html, body, form, #code-wrap, #result-wrap, #code, #result
 {
 	width: 100%;
 	padding: 0;
 }
 
-html, body, form
+html, body, form, #code, #result
 {
 	height: 100%;
 }
@@ -12,6 +17,19 @@ html, body, form
 #code-wrap
 {
 	height: 80%;
+}
+
+#vertical-resize-handle
+{
+	margin: 0;
+	border: none;
+	height: 5px;
+	background-color: black;
+}
+
+#vertical-resize-handle:hover
+{
+	cursor: row-resize;
 }
 
 #result-wrap

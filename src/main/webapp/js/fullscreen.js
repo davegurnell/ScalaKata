@@ -18,26 +18,30 @@ function RunPrefixMethod(obj, method, args) {
 	}
 }
 
-var el = document.getElementById("content");  
-el.onkeydown = function( e ) {
-  
-	toogleFullscren = function() {
-		
-		if( RunPrefixMethod( document, "FullScreen" ) 
-		|| RunPrefixMethod( document, "IsFullScreen" ) ) {
-			
-			RunPrefixMethod( document, "CancelFullScreen" );
+$(function(){
+
+	var el = document.getElementById("content");  
+	el.onkeydown = function( e ) {
+
+		toogleFullscren = function() {
+
+			if( RunPrefixMethod( el, "FullScreen" ) 
+			|| RunPrefixMethod( el, "IsFullScreen" ) ) {
+
+				RunPrefixMethod( el, "CancelFullScreen" );
+			}
+			else {
+				RunPrefixMethod( el, "RequestFullScreen", Element.ALLOW_KEYBOARD_INPUT );
+			}  
 		}
-		else {
-			RunPrefixMethod( el, "RequestFullScreen", Element.ALLOW_KEYBOARD_INPUT );
-		}  
+
+		if( e.keyCode == 122 												// F11 (windows) 
+			|| ( e.shiftKey && e.metaKey && e.keyCode == 70 ) ) { // or Command + Shift + F (mac)
+
+			e.preventDefault();
+
+			toogleFullscren();
+		}
 	}
-
-	if( e.keyCode == 122 												// F11 (windows) 
-		|| ( e.shiftKey && e.metaKey && e.keyCode == 70 ) ) { // or Command + Shift + F (mac)
-
-		e.preventDefault();
-
-		toogleFullscren();
-	}
-}
+	
+})

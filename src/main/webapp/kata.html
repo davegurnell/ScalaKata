@@ -13,7 +13,7 @@
 
   			</div>
   		</div>
-  		
+  		<hr id="vertical-resize-handle" draggable>
   		<div id="result-wrap">
 			<label for="result">Result</label>
   			<textarea lift="Interpret.eval" id="result"></textarea>
@@ -23,12 +23,22 @@
 	<lift:tail>
 		<script src="/vendors/CodeMirror2/codemirror.js"></script>
 		<script src="/vendors/CodeMirror2/clike.js"></script>
-		<script src="js/fullscreen.js"></script>
+		<script src="/vendors/MooTools/mootools-core-1.4.5-full-compat-yc.js"></script>
+		<script src="/vendors/MooTools/mootools-more-1.4.0.1.js"></script>
+		<script src="/js/fullscreen.js"></script>
+		<script src="/js/resize.js"></script>
 		<script>
 			$(function(){
+				
+				$(document).click( function(){
+					$('label[for="code"]').fadeOut( );
+					$('label[for="result"]').fadeOut( );
+				});
+				
 				window.codeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
 					lineNumbers: true,
 					matchBrackets: true,
+					autofocus: true,
 					theme: "ambiance",
 					mode: "text/x-scala"
 				});

@@ -1,1 +1,10 @@
-.full-height,.CodeMirror,.CodeMirror-scroll{height:100%}.CodeMirror{font-size:16px;font-family:'DejaVuSerifBook',Georgia}.test-sucess{background-color:green!important}.test-error{background-color:red!important}
+.full-height, .CodeMirror, .CodeMirror-scroll
+{
+	height:100%
+}
+
+.CodeMirror
+{
+	font-size:16px;
+	font-family:'DejaVuSerifBook',Georgia
+}
