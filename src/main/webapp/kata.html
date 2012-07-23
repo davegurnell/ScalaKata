@@ -20,7 +20,7 @@
   		</div>
 	</form>
 	
-	<lift:tail>
+	<tail>
 		<script src="/vendors/CodeMirror2/codemirror.js"></script>
 		<script src="/vendors/CodeMirror2/clike.js"></script>
 		<script src="/vendors/MooTools/mootools-core-1.4.5-full-compat-yc.js"></script>
@@ -50,14 +50,16 @@
 			   	mode: "text/x-scala",
 			   	readOnly: true
 			  	});
-			  
+
 				$(document).keydown( function( e ) {
-					if( e.keyCode == 13 && ( e.ctrlKey || e.metaKey ) ) { // ctrl + enter => run
-						$('#eval').trigger('click');
+					if( ( e.ctrlKey || e.metaKey ) &&											// command or ctrl +
+						 ( e.keyCode == 13 || e.keyCode == 82 || e.keyCode == 83 ) )	// enter, (r)un, (s)ave
+					{
 						e.preventDefault();
+						$('#eval').trigger('click');
 					}
 				});
 			});
 		</script>
-	</lift:tail>
+	</tail>
 </lift:surround>

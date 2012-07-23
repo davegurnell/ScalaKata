@@ -1,8 +1,5 @@
 package com.github.masseguillaume.snippet
 
-import com.twitter.util.Eval
-import com.twitter.util.Eval._
-
 import net.liftweb._
 import common._
 import sitemap._
@@ -13,7 +10,10 @@ import js._
 import JE._
 import JsCmds._
 
-import com.github.masseguillaume.model.Kata
+import com.github.masseguillaume._
+import service.KataEval
+import model.Kata
+
 import com.foursquare.rogue.Rogue._
 import org.bson.types.ObjectId
 
@@ -23,32 +23,10 @@ case class KataRessource( id: String )
 
 object Interpreter
 {
-	private val eval = new Eval()
-	def evalText( text: String ) = {
-		try{
-			
-			// redirect IO for this request
-			val baos = new java.io.ByteArrayOutputStream
-			Console.withOut( baos ) {
-
-				// eval code
-				eval( text ).toString match {
-					case "()" => ""
-					case other => other + "\n"
-				}
-
-			}	+ baos.toString
-		}
-		catch
-		{
-			case ex: Exception => ex.getMessage 
-		}
-	}
-	
 	val menu = Menu.param[Box[Kata]](
 		"Kata", "Kata", 
-      findKata, 
-      encodeKata _ ) / * >> 
+		findKata, 
+		encodeKata _ ) / * >> 
 		Template( () => Templates( "kata" :: Nil ) openOr <b>template not found</b>
 	)
 
@@ -86,7 +64,7 @@ class Interpret( kata: Box[Kata] )
 				MirrorValById(),
 				code => {
 					
-					val result = Interpreter.evalText( code )
+					val result = KataEval( code )
 					
 					val parent = kata match {
 						case Full( k ) => {
@@ -127,7 +105,7 @@ class Interpret( kata: Box[Kata] )
 		kata match {
 			case Full( k ) => k.result.is
 			case _ => S.param("code") match {
-				case Full( code ) => Interpreter.evalText( code )
+				case Full( code ) => KataEval( code )
 				case _ => ""
 			}			
 		}
