@@ -1,24 +1,25 @@
 package bootstrap.liftweb
 
-import com.github.masseguillaume.service._
-import com.github.masseguillaume.snippet.Interpreter
-
 import net.liftweb._
-import http._
 import util.Helpers._
+import http._
+import common.Full
+import sitemap.{SiteMap,Menu}
+import util.Vendor.valToVender
 
-import net.liftweb.http._
-import net.liftweb.common.Full
-import net.liftweb.sitemap.{SiteMap,Menu}
-import net.liftweb.util.Vendor.valToVender
+import com.github.masseguillaume._
+import service._
+import snippet.Interpreter
+import security.ScalaKataSecurity
 
 class Boot {
 	def boot {
 
-		LiftRules.addToPackages("com.github.masseguillaume")
-		
+		ScalaKataSecurity.start
 		KataMongo.start
-    
+		
+		LiftRules.addToPackages("com.github.masseguillaume")
+	
 		LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
 
 		val sitemap = List( Menu( Interpreter.loc ) )

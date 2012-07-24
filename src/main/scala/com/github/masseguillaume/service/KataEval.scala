@@ -5,6 +5,8 @@ import com.twitter.util.Eval._
 import net.liftweb.util.Props
 import scala.xml.Elem
 
+import net.liftweb.util.Props
+
 object KataEval {
 
 	private lazy val eval = new Eval()
