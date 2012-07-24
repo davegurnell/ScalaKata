@@ -11,7 +11,6 @@ $(function(){
 			$('#result-wrap').css('height', fullHeight - y )
 			
 			window.codeMirror.refresh();
-			window.resultMirror.refresh();
 		}
 	});
 })

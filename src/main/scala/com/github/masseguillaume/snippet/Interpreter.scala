@@ -1,7 +1,7 @@
 package com.github.masseguillaume.snippet
 
 import net.liftweb._
-import common._
+import common.{Box,Failure,Full,Empty}
 import sitemap._
 import sitemap.Loc._
 import util.Helpers._
@@ -18,6 +18,7 @@ import com.foursquare.rogue.Rogue._
 import org.bson.types.ObjectId
 
 import scala.xml.Text
+import scala.xml.Elem
 
 case class KataRessource( id: String )
 
@@ -64,24 +65,38 @@ class Interpret( kata: Box[Kata] )
 				MirrorValById(),
 				code => {
 					
-					val result = KataEval( code )
+					val ret = KataEval( code ) match {
+						case Full( ( result, print ) ) => {
+							/*
+							{
+								if( print.length > 0 ) print.toString + "\n"
+								else ""
+							} + result.toString
+							*/
+							result
+						}
+						case Failure( error, _, _ ) => error.toString
+						case Empty => ""
+					}
 					
 					val parent = kata match {
-						case Full( k ) => {
-							k._id.is
-						}
+						case Full( k ) => k._id.is
 						case _ => new ObjectId
 					}
 
 					val newkata = Kata
 						.createRecord
 						.code( code )
-						.result( result )
+						.result( ret.toString )
 						.parent( parent )
 						.save
 
-					SetHtml( "result", Text( result ) ) &
-					JsRaw( "resultMirror.setValue( document.getElementById( 'result' ).value )" ) &
+					val replaceResult = ret match {
+						case e: Elem => SetHtml( "result", e )
+						case _ => SetHtml( "result", Text( ret.toString ) )
+					}
+
+					replaceResult &
 					JsRaw( "$('#eval').attr('disabled', '')" ) &
 			    	JsRaw( "window.history.pushState( null, null,'/" + newkata._id + "')" )
 				}
@@ -90,7 +105,6 @@ class Interpret( kata: Box[Kata] )
 			( res._1, res._2 & JsRaw("return false") )
 		}
 	}
-	
 
 	def code = "#code *" #> {
 		S.param("code") openOr {			// Form submit /wo javascript
@@ -105,7 +119,14 @@ class Interpret( kata: Box[Kata] )
 		kata match {
 			case Full( k ) => k.result.is
 			case _ => S.param("code") match {
-				case Full( code ) => KataEval( code )
+				case Full( code ) => {
+				
+					KataEval( code ) match {
+						case Full( ( result, print ) ) => result.toString + "\n" + print
+						case Failure( compileError, _, _ ) => compileError.toString
+						case _ => ""
+					}
+				}
 				case _ => ""
 			}			
 		}

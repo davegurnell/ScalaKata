@@ -16,7 +16,13 @@
   		<hr id="vertical-resize-handle" draggable>
   		<div id="result-wrap">
 			<label for="result">Result</label>
-  			<textarea lift="Interpret.eval" id="result"></textarea>
+			
+			<div class="CodeMirror">
+				<div class="CodeMirror-scroll cm-s-ambiance">
+					<div lift="Interpret.eval" id="result">
+					</div>
+				</div>
+			</div>
   		</div>
 	</form>
 	
@@ -42,14 +48,6 @@
 					theme: "ambiance",
 					mode: "text/x-scala"
 				});
-	
-				window.resultMirror = CodeMirror.fromTextArea(document.getElementById("result"), {
-			   	lineNumbers: false,
-			   	matchBrackets: true,
-			   	theme: "ambiance",
-			   	mode: "text/x-scala",
-			   	readOnly: true
-			  	});
 
 				$(document).keydown( function( e ) {
 					if( ( e.ctrlKey || e.metaKey ) &&											// command or ctrl +

@@ -1,9 +1,13 @@
 package com.github.masseguillaume.service
 
+import scala.xml.Elem
+
 import com.twitter.util.Eval
 import com.twitter.util.Eval._
-import net.liftweb.util.Props
-import scala.xml.Elem
+
+import net.liftweb._
+import util.Props
+import common.{Box,Failure,Full}
 
 import net.liftweb.util.Props
 
@@ -11,23 +15,27 @@ object KataEval {
 
 	private lazy val eval = new Eval()
 	
-	def apply( code: String ) = {
+	def apply( code: String ) : Box[ Pair[ Any, String ] ] = {
+
 		try{
-
-			// redirect IO for this request
+			
 			val baos = new java.io.ByteArrayOutputStream
-			Console.withOut( baos ) {
-
-				eval( code ).toString match {
-					case "()" => ""
-					case other => other + "\n"
-				}
-
-			} + baos.toString
+			
+			// redirect IO for this request
+			val result = Console.withOut( baos ) {
+				eval[Any]( code )
+			}
+			
+			Full( ( result , baos.toString ) )
 		}
 		catch
 		{
-			case ex: Exception => ex.getStackTrace.foldLeft( ex.getMessage )( _ + "\n" + _) 
+			case ex: Exception => {
+				
+				val messages = ex.getStackTrace.foldLeft( ex.getMessage )( _ + "\n" + _) 
+				
+				Failure( messages ) 
+			} 
 		}
 	}
 	
