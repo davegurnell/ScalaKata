@@ -115,10 +115,10 @@ class Interpret( kata: Box[Kata] )
 	
 
 	def code = "#code *" #> {
-		S.param("code") openOr {				// Form submit /wo javascript
+		S.param("code") openOr {			// Form submit /wo javascript
 			kata match {
 				case Full( k ) => k.code.is	// GET Url
-				case _ => ""						// Index ( new Kata )
+				case _ => ""				// Index ( new Kata )
 			}
 		}
 	}
