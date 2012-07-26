@@ -10,15 +10,17 @@ import http._
 import js._
 import JE._
 import JsCmds._
-
+import json.JsonDSL._
+import json._
 import com.github.masseguillaume._
 import service.KataEval
 import model.Kata
-
 import com.foursquare.rogue.Rogue._
 import org.bson.types._
-
 import scala.xml.{Text,Elem,NodeSeq}
+
+import com.github.masseguillaume.service.eval.Eval.CompilerException
+import net.liftweb.json.JValue
 
 case class KataRessource( id: String )
 
@@ -64,7 +66,7 @@ object Interpreter
 
 class Interpret( kata: Box[Kata] )
 {
-	def render = {
+	def eval = {
 		
 		"#run [onclick]" #> {
 			val res = SHtml.ajaxCall(
@@ -87,35 +89,52 @@ class Interpret( kata: Box[Kata] )
 	
 	def run( code: String ) = {
 		def clearOutput = {
-			JsRaw( """
-				$("#result").html("");
-			""")
+			JsRaw( "$('#result').html('')" )
 		}
 
 		def showResultWindow = {
-			JsRaw( """
-				$('#code-wrap').addClass('with-results')
-				$('#code-wrap,#result-wrap').css('height','')
-				$('#result-window').removeClass('hidden')
-				codeMirror.refresh()
-			""")
+		  JsRaw(
+      """
+				 |$('#code-wrap').addClass('with-results');
+				 |$('#code-wrap,#result-wrap').css('height','');
+				 |$('#result-window').removeClass('hidden');
+				 |codeMirror.refresh();
+			""".stripMargin)
 		}
 		
 		def showBoolean( value: Boolean ) = {
+			
+			val messageSuccess = {
+				if( value ) {
+					kata match {
+						case Full( k ) => {
+							
+							val message = compact( render( ( "solved" -> k._id.toString ) ) )
+
+							JsRaw("parent.postMessage('" + message + "','*')") &
+							Noop
+						}
+						case _ => Noop
+					}
+				}
+				else Noop
+			}
+			
 			JsRaw("$('#code-wrap .cm-s-ambiance').addClass('" + value.toString + "')") &
 			JsRaw("""
-				(function(){
-				
-					this.restore = function(){ 
-						$('#code-wrap .cm-s-ambiance').removeClass('""" + value.toString + """','');
-					}
-					
-					$(document)
-						.click( this.restore )
-						.keydown( this.restore )
-					
-				}());
-			""")	
+				 |(function(){
+				 |
+				 |	this.restore = function(){
+				 |		$('#code-wrap .cm-s-ambiance').removeClass('""" + value.toString + """','');
+				 |	}
+				 |
+				 |	$(document)
+				 |		.click( this.restore )
+				 |		.keydown( this.restore );
+				 |
+				 |}());
+			""".stripMargin) &
+			messageSuccess
 		}
 
 		val handleOutput = KataEval( code ) match {
@@ -132,10 +151,38 @@ class Interpret( kata: Box[Kata] )
 					case _ => SetHtml( "result", Text( result.toString ) )
 				}
 
-				handlePrint( print ) & handleResult( result )
+				handlePrint( print ) & 
+				handleResult( result )
 			}
-			
+
+			case Failure( _, Full( CompilerException( errors ) ), _ ) => {
+
+				errors.reverse.zipWithIndex.map{ case ( err, i ) => {
+
+          		val ( position, message, severity ) = err
+					val ch = position.column - 1 // before error
+					val line = position.line - 3 // indent
+					
+					val severityClass = severity match {
+						case 0 => "info"
+						case 1 => "warning"
+						case 2 => "error"
+					}
+
+					val replace = compact( render( ( "ch" -> Double.PositiveInfinity ) ~ ( "line" -> line ) ) )
+					val nextLineErrorMessage = JsRaw( """codeMirror.replaceRange("\n""" + message.replace("\n","") + """ ",""" + replace + """,""" + replace + """)""" )
+
+					val from = compact( render( ( "ch" -> ch ) ~ ( "line" -> ( line + 1 ) ) ) )
+					val to = compact( render( ( "ch" -> Double.PositiveInfinity ) ~ ( "line" -> ( line + 1 ) ) ) )
+					val highlight = JsRaw( "codeMirror.markText(" + from + "," + to + ",'" + severityClass + "')")
+
+          		//nextLineErrorMessage &
+          		//highlight &
+          		Noop
+				}}
+			}
 			case Failure( error, _, _ ) => {
+
 				SetHtml("console", Text( error.toString ) ) &
 				showBoolean( false )
 			}
@@ -172,18 +219,18 @@ class Interpret( kata: Box[Kata] )
 	}
 	
 	case class GetCode() extends JsExp {
-		def toJsCmd = 
-		"""
-			( function() {
-				$('#run').attr('disabled','disabled')
-				codeMirror.save();
-				var $code = $('#code'); 
-				if ( $code.length ) {
-					return $code.attr('value');
-				} else {
-					return null;
-				}
-			})()
-		"""
+		def toJsCmd =
+      """
+        |( function() {
+        |	$('#run').attr('disabled','disabled');
+        |	codeMirror.save();
+        |	var $code = $('#code');
+        |	if ( $code.length ) {
+        |		return $code.attr('value');
+        |	} else {
+        |		return null;
+        |	}
+        |})()
+      """.stripMargin
   }
 }

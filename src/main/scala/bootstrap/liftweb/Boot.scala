@@ -32,7 +32,7 @@ class Boot {
 		LiftRules.htmlProperties.default.set((r: Req) =>
 	  		new Html5Properties(r.userAgent)
 		)
-	  
+
 		//Show the spinny image when an Ajax call starts
     	LiftRules.ajaxStart =
       	Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)

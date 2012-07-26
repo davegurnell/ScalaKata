@@ -32,3 +32,6 @@ adapted from Ninety-Nine Prolog Problems written by Werner Hett
 <http://blog.yuvimasory.com/2011/04/detect-scala-version-at-run-time.html>
 
 <http://scala.masgui.cloudbees.net/500892b8e4b0cfd655485a73>
+
+# Developpers
+See getting started here: [Developper:-Getting-Started](https://github.com/MasseGuillaume/ScalaKata/wiki/Developper:-Getting-Started)

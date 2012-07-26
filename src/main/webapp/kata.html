@@ -1,5 +1,5 @@
 <lift:surround with="default" at="content">
-  	<form id="content" lift="Interpret.render" method="POST" class="full">
+  	<form id="content" lift="Interpret.eval" method="POST" class="full">
 
   		<div id="code-wrap">
 			<label for="code">Code</label>
@@ -15,23 +15,19 @@
 		
 		<div id="result-window" class="hidden">
 			<hr id="vertical-resize-handle">
-		
+
 			<div id="result-wrap">
 				<label for="result">Result</label>
 				<div class="CodeMirror">
 					<div class="CodeMirror-scroll cm-s-ambiance">
 						<pre id="console">
-
 						</pre>
 						<div id="result">
-
 						</div>
 					</div>
 				</div>
 			</div>
 		<div>
-		
-		
 	</form>
 	
 	<tail>
@@ -49,6 +45,10 @@
 					lineNumbers: true,
 					matchBrackets: true,
 					autofocus: true,
+                    indentWithTabs: true,
+                    electricChars: false,
+                    autoClearEmptyLines: true,
+                    firstLineNumber: 0,
 					theme: "ambiance",
 					mode: "text/x-scala"
 				});

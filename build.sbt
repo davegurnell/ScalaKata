@@ -17,9 +17,9 @@ libraryDependencies ++= {
 		"net.liftweb"         	%% "lift-webkit"           	% "2.4"           		% "compile->default"    withSources(),
 		"net.liftweb"         	%% "lift-mongodb-record"   	% "2.4",
 		"ch.qos.logback"      	%  "logback-classic"       	% "1.0.3",
-		"org.eclipse.jetty"		%  "jetty-webapp" 			% "8.0.4.v20111024" 	% "container",
+		"org.eclipse.jetty"		%  "jetty-webapp" 				% "8.0.4.v20111024" 	% "container",
 		"javax.servlet"       	%  "servlet-api"           	% "2.5"           		% "provided->default",
-		"com.twitter"         	%  "util-eval"             	% "5.3.1"                                 		withSources(),
+		"com.twitter"         	%  "util-eval"             	% "5.3.1"					% "compile->default"		withSources(),
 		"com.foursquare"      	%% "rogue"                 	% "1.1.8"                                 		intransitive(),
 		"org.specs2"          	%% "specs2"                	% "1.11",
 		// for fun

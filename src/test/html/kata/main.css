@@ -1,0 +1,15 @@
+iframe
+{
+    border: none;
+}
+
+body
+{
+    background-color: black;
+    color: white;
+}
+
+iframe #code-wrap
+{
+    background-color: yellow;
+}

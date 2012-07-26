@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    
+    <head>
+        <link href="main.css" rel="stylesheet">
+    </head>
+    
+    <body>
+        <iframe src="http://scala.masgui.cloudbees.net/5013e636e4b0ee9926e6255d" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        <div id="message">cool</div>
+        
+        <script>
+            window.onmessage = function( e ){
+                var kata;
+                
+                kata = JSON.parse( e.data );
+                
+                if( kata.solved ) {
+                    document.getElementById("message").innerHTML = "solved " + kata.solved;
+                }
+            }
+        </script>
+    </body>
+</html>

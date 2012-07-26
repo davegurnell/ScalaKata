@@ -2,12 +2,12 @@ package com.github.masseguillaume.service
 
 import scala.xml.Elem
 
-import com.twitter.util.Eval
-import com.twitter.util.Eval._
+import com.github.masseguillaume.service.eval.Eval
+import com.github.masseguillaume.service.eval.Eval._
 
 import net.liftweb._
 import util.Props
-import common.{Box,Failure,Full}
+import common.{Empty, Box, Failure, Full}
 
 import net.liftweb.util.Props
 
@@ -30,6 +30,10 @@ object KataEval {
 		}
 		catch
 		{
+			case e: CompilerException => {
+        new Failure( "", Full(e), Empty )
+			}
+
 			case ex: Exception => {
 				
 				val message = Props.mode match {
@@ -42,7 +46,7 @@ object KataEval {
 				}
 
 				Failure( message )
-			} 
+			}
 		}
 	}
 	
