@@ -8,3 +8,19 @@
 	font-size:16px;
 	font-family:'DejaVuSerifBook',Georgia
 }
+
+.CodeMirror-gutter
+{
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
+}
+
+.true
+{
+	background-color: #135022; /* Green-ich */
+}
+
+.false
+{
+	background-color: #550505;	/* Red-ich */
+}

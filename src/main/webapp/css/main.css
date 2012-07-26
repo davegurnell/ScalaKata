@@ -16,7 +16,12 @@ html, body, form, #code, #result
 
 #code-wrap
 {
-	height: 80%;
+	height: 100%;
+}
+
+#code-wrap.with-results
+{
+	height: 80%;	
 }
 
 #vertical-resize-handle
@@ -32,9 +37,14 @@ html, body, form, #code, #result
 	cursor: row-resize;
 }
 
-#result-wrap
+#result-window
 {
 	height: 20%;
+}
+
+#result-wrap
+{
+	height: 100%;
 }
 
 #code-wrap, #result-wrap

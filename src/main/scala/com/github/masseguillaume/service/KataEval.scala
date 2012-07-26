@@ -20,7 +20,7 @@ object KataEval {
 		try{
 			
 			val baos = new java.io.ByteArrayOutputStream
-			
+
 			// redirect IO for this request
 			val result = Console.withOut( baos ) {
 				eval[Any]( code )
@@ -32,9 +32,16 @@ object KataEval {
 		{
 			case ex: Exception => {
 				
-				val messages = ex.getStackTrace.foldLeft( ex.getMessage )( _ + "\n" + _) 
-				
-				Failure( messages ) 
+				val message = Props.mode match {
+					case Props.RunModes.Production => {
+						ex.getMessage
+					}
+				  	case _ => {
+						ex.getStackTrace.foldLeft( ex.getMessage )( _ + "\n" + _) 
+					}
+				}
+
+				Failure( message )
 			} 
 		}
 	}

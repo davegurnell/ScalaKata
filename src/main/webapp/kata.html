@@ -3,36 +3,40 @@
 
   		<div id="code-wrap">
 			<label for="code">Code</label>
-  			<textarea name="code" lift="Interpret.code" id="code"></textarea>
+  			<textarea name="code" id="code"></textarea>
 			
   			<div id="controls">
 			
-  				<button id="eval" class="btn btn-success btn-large" type="submit" name="action" value="Eval">
-    					<i class="icon-play icon-white"></i> Run
+  				<button id="run" class="btn btn-success btn-large" type="submit" name="action" value="Run">
+    					<i class="icon-play icon-white"></i>
   				</button>
-
   			</div>
   		</div>
-  		<hr id="vertical-resize-handle" draggable>
-  		<div id="result-wrap">
-			<label for="result">Result</label>
-			
-			<div class="CodeMirror">
-				<div class="CodeMirror-scroll cm-s-ambiance">
-					<div lift="Interpret.eval" id="result">
+		
+		<div id="result-window" class="hidden">
+			<hr id="vertical-resize-handle">
+		
+			<div id="result-wrap">
+				<label for="result">Result</label>
+				<div class="CodeMirror">
+					<div class="CodeMirror-scroll cm-s-ambiance">
+						<pre id="console">
+
+						</pre>
+						<div id="result">
+
+						</div>
 					</div>
 				</div>
 			</div>
-  		</div>
+		<div>
+		
+		
 	</form>
 	
 	<tail>
 		<script src="/vendors/CodeMirror2/codemirror.js"></script>
 		<script src="/vendors/CodeMirror2/clike.js"></script>
-		<script src="/vendors/MooTools/mootools-core-1.4.5-full-compat-yc.js"></script>
-		<script src="/vendors/MooTools/mootools-more-1.4.0.1.js"></script>
-		<script src="/js/fullscreen.js"></script>
-		<script src="/js/resize.js"></script>
 		<script>
 			$(function(){
 				
@@ -50,14 +54,39 @@
 				});
 
 				$(document).keydown( function( e ) {
-					if( ( e.ctrlKey || e.metaKey ) &&											// command or ctrl +
-						 ( e.keyCode == 13 || e.keyCode == 82 || e.keyCode == 83 ) )	// enter, (r)un, (s)ave
+					if( ( e.ctrlKey || e.metaKey ) &&				// command or ctrl +
+						 ( e.keyCode == 13 || e.keyCode == 83 ) )	// enter, (s)ave
 					{
 						e.preventDefault();
-						$('#eval').trigger('click');
+						$('#run').trigger('click');
 					}
 				});
 			});
 		</script>
+		<script src="/js/fullscreen.js"></script>
+		<script src="/vendors/MooTools/mootools-core-1.4.5-full-compat-yc.js"></script>
+		<script src="/vendors/MooTools/mootools-more-1.4.0.1.js"></script>
+		
+		<script>
+
+			$(function(){
+
+				document.getElementById('code-wrap').makeResizable({
+					handle: document.getElementById('vertical-resize-handle'),
+					modifiers: {'x': null, 'y': 'height'},
+					onDrag: function( el ){
+
+						var y = $(el).height();
+						var fullHeight = window.innerHeight;
+
+						$('#result-wrap').css('height', fullHeight - y )
+
+						window.codeMirror.refresh();
+					}
+				});
+			})
+
+		</script>
+
 	</tail>
 </lift:surround>

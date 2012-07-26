@@ -4,6 +4,7 @@ import net.liftweb._
 import common.{Box,Failure,Full,Empty}
 import sitemap._
 import sitemap.Loc._
+import util._
 import util.Helpers._
 import http._
 import js._
@@ -15,10 +16,9 @@ import service.KataEval
 import model.Kata
 
 import com.foursquare.rogue.Rogue._
-import org.bson.types.ObjectId
+import org.bson.types._
 
-import scala.xml.Text
-import scala.xml.Elem
+import scala.xml.{Text,Elem,NodeSeq}
 
 case class KataRessource( id: String )
 
@@ -36,11 +36,17 @@ object Interpreter
 			case "index" => Full( Empty )
 			case _ => {
 
-				val res = Kata where ( _._id eqs new ObjectId( id ) ) fetch( 1 )
-				
-				res match {
-					case head :: Nil => Full( Full( head ) )
-					case Nil => Empty
+				try
+				{
+					val res = Kata where ( _._id eqs new ObjectId( id ) ) fetch( 1 )
+					
+					res match {
+						case head :: Nil => Full( Full( head ) )
+						case Nil => Empty
+					}	
+				}
+				catch {
+					case e: IllegalArgumentException => Empty // not an ObjectId
 				}
 			}
 		}
@@ -60,83 +66,116 @@ class Interpret( kata: Box[Kata] )
 {
 	def render = {
 		
-		"#eval [onclick]" #> {
+		"#run [onclick]" #> {
 			val res = SHtml.ajaxCall(
-				MirrorValById(),
-				code => {
-					
-					val ret = KataEval( code ) match {
-						case Full( ( result, print ) ) => {
-							/*
-							{
-								if( print.length > 0 ) print.toString + "\n"
-								else ""
-							} + result.toString
-							*/
-							result
-						}
-						case Failure( error, _, _ ) => error.toString
-						case Empty => ""
-					}
-					
-					val parent = kata match {
-						case Full( k ) => k._id.is
-						case _ => new ObjectId
-					}
-
-					val newkata = Kata
-						.createRecord
-						.code( code )
-						.result( ret.toString )
-						.parent( parent )
-						.save
-
-					val replaceResult = ret match {
-						case e: Elem => SetHtml( "result", e )
-						case _ => SetHtml( "result", Text( ret.toString ) )
-					}
-
-					replaceResult &
-					JsRaw( "$('#eval').attr('disabled', '')" ) &
-			    	JsRaw( "window.history.pushState( null, null,'/" + newkata._id + "')" )
-				}
+				GetCode(),
+				code => run( code )
 			)
 			
-			( res._1, res._2 & JsRaw("return false") )
-		}
-	}
-
-	def code = "#code *" #> {
-		S.param("code") openOr {			// Form submit /wo javascript
-			kata match {
-				case Full( k ) => k.code.is	// GET Url
-				case _ => ""				// Index ( new Kata )
+			( res._1, res._2 & JsRaw("return false") ) // does not submit
+			
+		} & 
+		"#code *" #> {
+			S.param("code") openOr {			// Form submit /wo javascript
+				kata match {
+					case Full( k ) => k.code.is	// GET Url
+					case _ => ""				// Index ( new Kata )
+				}
 			}
 		}
 	}
 	
-	def eval = "#result *" #> {
-		kata match {
-			case Full( k ) => k.result.is
-			case _ => S.param("code") match {
-				case Full( code ) => {
-				
-					KataEval( code ) match {
-						case Full( ( result, print ) ) => result.toString + "\n" + print
-						case Failure( compileError, _, _ ) => compileError.toString
-						case _ => ""
-					}
-				}
-				case _ => ""
-			}			
+	def run( code: String ) = {
+		def clearOutput = {
+			JsRaw( """
+				$("#result").html("");
+			""")
 		}
+
+		def showResultWindow = {
+			JsRaw( """
+				$('#code-wrap').addClass('with-results')
+				$('#code-wrap,#result-wrap').css('height','')
+				$('#result-window').removeClass('hidden')
+				codeMirror.refresh()
+			""")
+		}
+		
+		def showBoolean( value: Boolean ) = {
+			JsRaw("$('#code-wrap .cm-s-ambiance').addClass('" + value.toString + "')") &
+			JsRaw("""
+				(function(){
+				
+					this.restore = function(){ 
+						$('#code-wrap .cm-s-ambiance').removeClass('""" + value.toString + """','');
+					}
+					
+					$(document)
+						.click( this.restore )
+						.keydown( this.restore )
+					
+				}());
+			""")	
+		}
+
+		val handleOutput = KataEval( code ) match {
+
+			case Full( ( result, print ) ) => {
+				
+				def handlePrint( print: String ) = SetHtml("console", Text( print ) )
+				
+				def handleResult( result: Any ) = result match {
+
+					case b: Boolean => showBoolean( b )
+					case e: NodeSeq => SetHtml( "result", e )
+					case n: Unit => Noop
+					case _ => SetHtml( "result", Text( result.toString ) )
+				}
+
+				handlePrint( print ) & handleResult( result )
+			}
+			
+			case Failure( error, _, _ ) => {
+				SetHtml("console", Text( error.toString ) ) &
+				showBoolean( false )
+			}
+			case Empty => Noop
+		} 
+
+							
+		def enableRun = {
+			JsRaw( "$('#run').attr('disabled', '')" )						
+		}
+		
+		def pushKataId( newKata: Kata ) = {
+			JsRaw( "window.history.pushState( null, null,'/" + newKata._id + "')" )
+		}
+
+		val parent = kata match {
+			case Full( k ) => {
+				k._id.is
+			}
+			case _ => new ObjectId
+		}
+
+		val newKata = Kata
+			.createRecord
+			.code( code )
+			.parent( parent )
+			.save
+
+		clearOutput &
+		handleOutput &
+		enableRun &
+		showResultWindow &
+		pushKataId( newKata )
 	}
 	
-	case class MirrorValById() extends JsExp {
+	case class GetCode() extends JsExp {
 		def toJsCmd = 
 		"""
 			( function() {
-				$('#eval').attr('disabled','disabled')
+				$('#run').attr('disabled','disabled')
 				codeMirror.save();
 				var $code = $('#code'); 
 				if ( $code.length ) {

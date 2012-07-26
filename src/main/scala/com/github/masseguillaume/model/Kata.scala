@@ -13,7 +13,6 @@ class Kata extends MongoRecord[Kata] with MongoId[Kata]
 
 	object parent extends ObjectIdField( this )
 	object code extends StringField( this, 5000 )
-	object result extends StringField( this, 500 )
 }
 
 object Kata extends Kata with MongoMetaRecord[Kata]
