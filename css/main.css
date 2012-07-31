@@ -1,0 +1,44 @@
+iframe
+{
+   margin: 0;
+   width: 100%;
+   height: 100%;
+}
+
+.newborn
+{
+    height: 100%;
+    width: 100%;
+}
+
+.slide
+{
+    position: relative;
+}
+
+#trello, #party, #scala-99, #doc-lift, #baby
+{
+    padding: 0;
+}
+
+#party img
+{
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.twitter
+{
+    float: right;
+}
+
+.twitter div, .gmail div
+{
+    text-align: center;
+}
+
+.gmail
+{
+    float: left;
+}

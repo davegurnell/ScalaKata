@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>ScalaKata</title>
+    
+    <meta name="description" content="ScalaKata: Run &amp; Share scal code in your browser"/>
+    <meta name="author" content="Guillaume Masse" />
+
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="css/impress-demo.css" rel="stylesheet" />
+    
+    <link rel="shortcut icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+</head>
+
+<body class="impress-not-supported">
+
+    
+<div id="impress">
+	
+	<div id="overview" class="step" data-x="1600" data-y="1200" data-scale="4">
+
+   </div>
+	
+	<section>
+        
+        <div id="history" class="step section-intro" data-x="400" data-y="0">
+            <h1>History</h1>
+        </div>
+        
+        <div id="baby" class="step slide" data-x="1000" data-y="0">
+            <img class="newborn" src="img/newborn-crying.jpeg" />
+        </div>
+            
+    </section>
+    
+    <section>
+        
+        <div id="use-cases" class="step section-intro" data-x="400" data-y="800">
+            <h1>Use cases</h1>
+        </div>
+        
+        <div id="scala-99" class="step slide" data-x="1000" data-y="800">
+            <iframe src="http://scala.masgui.cloudbees.net/50088d21e4b0cfd655485a59" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div>
+
+        <div id="doc-lift" class="step slide" data-x="2000" data-y="800">
+            <iframe src="http://scala.masgui.cloudbees.net/50141865e4b0ee9926e6257f" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div>
+        
+        <div id="party" class="step slide" data-x="3000" data-y="800">
+            <img src="img/party.jpg" />
+        </div>
+        
+    </section>
+        
+    
+    <section>
+        
+        <div id="road-map" class="step section-intro" data-x="400" data-y="1600">
+            <h1>Road Map</h1>
+        </div>
+        
+        <div id="trello" class="step slide" data-x="1000" data-y="1600">
+            <iframe src="https://trello.com/board/scalakata/5005c7fc0b5c6b43769784c9"></iframe>
+        </div>
+
+    </section>
+    
+    <section>
+        <div id="contact" class="step section-intro" data-x="400" data-y="2400">
+            <h1>Contact</h1>
+        </div>
+        
+        <div id="gui" class="step slide" data-x="1000" data-y="2400">
+            
+            <div class="twitter">
+                <div>@MasseGuillaume</div>
+                <img src="img/twitter.png">  
+            </div>
+            
+            <div class="gmail">
+                <div>MasGui@Gmail.com</div>
+                <img src="img/gmail.png">
+            </div>
+        </div>
+    </section>
+    
+    <div id="wrap-up" class="step" data-x="1600" data-y="1200" data-scale="4">
+
+    </div>
+
+
+</div>
+
+
+<script src="js/impress.js"></script>
+<script>impress().init();</script>
+<script>
+    document.getElementById('wrap-up').onclick = function(e){
+        e.preventDefault(); 
+    };
+</script>
+
+</body>
+</html>
