@@ -113,15 +113,15 @@ label[for="code"], label[for="result"]
 
 .error
 {
-    background-color: rgba( 255, 0, 0, 0.4 )
+    background-color: rgba( 255, 0, 0, 0.4 ) !important;
 }
 
 .warning
 {
-    background-color: rgba( 255, 255, 0, 0.4 )
+    background-color: rgba( 255, 255, 0, 0.4 ) !important;
 }
 
 .info
 {
-    background-color: rgba( 255, 255, 255, 0.4 )
+    background-color: rgba( 255, 255, 255, 0.4 ) !important;
 }

@@ -151,12 +151,12 @@ class Interpret( kata: Box[Kata] )
 					case _ => SetHtml( "result", Text( result.toString ) )
 				}
 
-				handlePrint( print ) & 
-				handleResult( result )
+				handlePrint( print ) & handleResult( result )
 			}
 
 			case Failure( _, Full( CompilerException( errors ) ), _ ) => {
 
+				JsRaw("var markers = [], i") &
 				errors.reverse.zipWithIndex.map{ case ( err, i ) => {
 
           		val ( position, message, severity ) = err
@@ -169,17 +169,77 @@ class Interpret( kata: Box[Kata] )
 						case 2 => "error"
 					}
 
+					val from = compact( render( ( "ch" -> ch ) ~ ( "line" -> line ) ) )
+					val to = compact( render( ( "ch" -> Double.PositiveInfinity ) ~ ( "line" -> line ) ) )
+					val highlight = JsRaw( "markers[" + i + "]=codeMirror.markText(" + from + "," + to + ",'" + severityClass + "')")
+
+					val from2 = compact( render( ( "ch" -> 0 ) ~ ( "line" -> ( line + 1 ) ) ) )
+					val to2 = compact( render( ( "ch" -> Double.PositiveInfinity ) ~ ( "line" -> ( line + 1 ) ) ) )
+					val highLightErrorMessage = JsRaw( "codeMirror.markText(" + from2 + "," + to2 + ",'" + severityClass + "')")
+
 					val replace = compact( render( ( "ch" -> Double.PositiveInfinity ) ~ ( "line" -> line ) ) )
+					val end = compact( render( ( "ch" -> Double.PositiveInfinity ) ~ ( "line" -> line ) ) )
+
 					val nextLineErrorMessage = JsRaw( """codeMirror.replaceRange("\n""" + message.replace("\n","") + """ ",""" + replace + """,""" + replace + """)""" )
 
-					val from = compact( render( ( "ch" -> ch ) ~ ( "line" -> ( line + 1 ) ) ) )
-					val to = compact( render( ( "ch" -> Double.PositiveInfinity ) ~ ( "line" -> ( line + 1 ) ) ) )
-					val highlight = JsRaw( "codeMirror.markText(" + from + "," + to + ",'" + severityClass + "')")
-
-          		//nextLineErrorMessage &
-          		//highlight &
+          		nextLineErrorMessage &
+          		highLightErrorMessage &
+          		highlight &
           		Noop
-				}}
+				}} &
+				JsRaw("""
+            	$(document).keyup( function( e ){
+            
+            		// leave if navigation
+            		var code = e.keyCode;
+            		var ignore = [
+            			17,
+            			18,
+            			33,
+            			34,
+            			37,
+            			38,
+            			39,
+            			40,
+            			91,
+            			93
+            		]
+
+            		if( $.inArray(code, ignore) !== -1 ) 	
+						{
+							return;
+						}
+
+						var cursor = codeMirror.getCursor()
+						var line = cursor['line'];
+
+						var currentLineInfo = codeMirror.lineInfo( line );
+
+						var nextLineInfo = codeMirror.lineInfo( line + 1 );
+						if( nextLineInfo.handle.marked )
+						{
+							codeMirror.removeLine( line + 1 );
+						}
+
+						if( currentLineInfo.handle.marked )
+						{
+							for( i = 0; i < markers.length; i++ )
+							{
+								if( !markers[i] )
+								{
+									return;
+								}
+
+								if( markers[i].find().from.line == line )
+								{
+									markers[i].clear();
+									delete markers[i];
+									return;
+								}
+							}
+						}
+            	});"""
+           	)
 			}
 			case Failure( error, _, _ ) => {
 
